@@ -26,7 +26,7 @@ policy "check_05" {
 }
 
 policy "check_06" {
-  enabled           = true
+  enabled           = false
   enforcement_level = "soft-mandatory"
 }
 

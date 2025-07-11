@@ -1,6 +1,6 @@
-variable "environment" {
+variable "token" {
   type        = string
-  default     = "prod" 
-  description = "Deployment environment"
+  default     = "token-value-for-test" 
+  description = "This is token"
   sensitive   = true
 }

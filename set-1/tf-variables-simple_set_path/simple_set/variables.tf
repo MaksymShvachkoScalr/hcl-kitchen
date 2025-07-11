@@ -2,5 +2,5 @@ variable "environment" {
   type        = string
   default     = "prod" 
   description = "Deployment environment"
-  sensitive   = false
+  sensitive   = true
 }

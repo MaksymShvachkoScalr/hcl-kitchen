@@ -1,6 +1,6 @@
 variable "environment" {
   type        = string
-  value       = "prod" 
+  default     = "prod" 
   description = "Deployment environment"
   sensitive   = true
 }

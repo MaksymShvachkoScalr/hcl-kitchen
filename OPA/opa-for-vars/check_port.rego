@@ -1,7 +1,6 @@
 package terraform
 import input.tfplan as plan
 
-default deny = []
 deny[reason] {
   input.variables["service_ports"].hcl == true
   web_port := input.variables["service_ports"].value["web"]

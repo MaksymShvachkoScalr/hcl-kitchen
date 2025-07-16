@@ -1,15 +1,11 @@
-package terraform
-import input.tfplan as plan
-
-default deny = []
-default warn = []
-
-deny[reason] {
-  input.variables["environment"].value == "prod"
-  reason := "Use of 'prod' environment is not allowed."
-}
+package terraform.check_env
 
 warn[reason] {
   input.variables["environment"].value == "staging"
-  reason := "Using 'staging' environment is discouraged."
+  reason := "Environment 'staging' should be used with caution."
+}
+
+deny[reason] {
+  input.variables["environment"].value == "prod"
+  reason := "Environment 'prod' is forbidden."
 }

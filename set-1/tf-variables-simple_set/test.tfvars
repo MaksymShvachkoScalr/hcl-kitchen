@@ -1,4 +1,4 @@
-environment = "staging"
+environment = "production"
 
 service_ports = {
   web  = 80

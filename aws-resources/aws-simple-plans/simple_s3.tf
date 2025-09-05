@@ -14,7 +14,8 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "example" {
-  bucket = "alfiia-s3-simple-${replace(time_static.now.unix, "/[^0-9]/", "")}"
+  count = 10
+  bucket = "alfiia-s3-${count.index}-simple-${replace(time_static.now.unix, "/[^0-9]/", "")}"
   force_destroy = true
 
   tags = {

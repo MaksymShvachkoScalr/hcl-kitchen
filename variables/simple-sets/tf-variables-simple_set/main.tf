@@ -7,3 +7,7 @@ resource "null_resource" "example" {
     command = "echo Running in environment: ${var.environment}"
   }
 }
+
+output "service_ports_output" {
+  value = var.service_ports
+}

@@ -77,7 +77,11 @@ resource "terraform_data" "tags" {
   ]
 }
 
-# CASE 4 — large array that must fall back to the value-based diff.
+# CASE 4 — large array (2500 entries) that must fall back to the value-based diff.
 resource "terraform_data" "large_address_pool" {
-  input = [for i in range(2500) : format("10.%d.%d.%d/32", floor(i / 256), i % 256, i % 251)]
+  input = flatten([
+    for a in range(50) : [
+      for b in range(50) : format("10.%d.%d.0/24", a, b)
+    ]
+  ])
 }

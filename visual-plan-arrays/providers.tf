@@ -21,8 +21,8 @@ resource "random_shuffle" "regions" {
     "ap-south-1",
     "ap-southeast-1",
     "eu-central-1",
+    "eu-north-1",
     "eu-west-1",
-    "sa-east-1",
     "us-east-1",
     "us-east-2",
     "us-west-2",
@@ -47,7 +47,7 @@ resource "tls_self_signed_cert" "demo" {
   validity_period_hours = 8760
 
   allowed_uses = [
-    "cert_signing",
+    "client_auth",
     "digital_signature",
     "key_encipherment",
     "server_auth",
@@ -55,8 +55,9 @@ resource "tls_self_signed_cert" "demo" {
 
   dns_names = [
     "a.visual-plan.example.com",
-    "b.visual-plan.example.com",
+    "b2.visual-plan.example.com",
     "c.visual-plan.example.com",
+    "d.visual-plan.example.com",
   ]
 }
 
@@ -65,8 +66,8 @@ resource "tls_self_signed_cert" "demo" {
 # a real value change must show.
 resource "terraform_data" "iam_policies" {
   input = [
-    jsonencode({ Effect = "Allow", Action = "s3:GetObject", Resource = "arn:aws:s3:::bucket-a/*" }),
-    jsonencode({ Effect = "Allow", Action = "s3:PutObject", Resource = "arn:aws:s3:::bucket-b/*" }),
+    jsonencode({ Resource = "arn:aws:s3:::bucket-a/*", Action = "s3:GetObject", Effect = "Allow" }),
+    jsonencode({ Effect = "Deny", Action = "s3:PutObject", Resource = "arn:aws:s3:::bucket-b/*" }),
     jsonencode({ Effect = "Allow", Action = "sqs:SendMessage", Resource = "arn:aws:sqs:::queue-c" }),
   ]
 }
@@ -74,8 +75,9 @@ resource "terraform_data" "iam_policies" {
 # CASE 8 (AC 8) — array of arrays.
 resource "terraform_data" "port_ranges" {
   input = [
-    [80, 443],
+    [80, 443, 8443],
     [3000, 3999],
+    [5000, 5099],
     [8080, 8089],
     [9090, 9099],
   ]
@@ -85,12 +87,12 @@ resource "terraform_data" "port_ranges" {
 # object rendering is untouched by the array work.
 resource "terraform_data" "mixed_attributes" {
   input = {
-    replicas    = 3
-    enabled     = true
+    replicas    = 5
+    enabled     = false
     tier        = "backend"
-    ratio       = 0.75
+    ratio       = 0.9
     maybe       = null
-    nested      = { region = "eu-west-1", zone = "eu-west-1a" }
+    nested      = { region = "eu-west-1", zone = "eu-west-1b" }
     single_list = ["only-item"]
   }
 }

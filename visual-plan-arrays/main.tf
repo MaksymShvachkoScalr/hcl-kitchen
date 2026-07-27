@@ -7,20 +7,21 @@ terraform {
 }
 
 # CASE 1 (CLOUD-4942) — set(string): re-sorted, one added, one removed, one changed in place.
+# v2: removed 10.0.3.0/24, added 10.0.7.0/24, 203.0.113.0/24 -> 203.0.113.128/25, order reversed.
 resource "terraform_data" "allowed_cidrs" {
   input = [
-    "10.0.1.0/24",
-    "10.0.2.0/24",
-    "10.0.3.0/24",
-    "10.0.4.0/24",
-    "10.0.5.0/24",
-    "10.0.6.0/24",
-    "172.16.0.0/16",
-    "172.17.0.0/16",
-    "192.168.10.0/24",
-    "192.168.11.0/24",
+    "203.0.113.128/25",
     "198.51.100.0/24",
-    "203.0.113.0/24",
+    "192.168.11.0/24",
+    "192.168.10.0/24",
+    "172.17.0.0/16",
+    "172.16.0.0/16",
+    "10.0.7.0/24",
+    "10.0.6.0/24",
+    "10.0.5.0/24",
+    "10.0.4.0/24",
+    "10.0.2.0/24",
+    "10.0.1.0/24",
   ]
 }
 
@@ -36,10 +37,17 @@ resource "terraform_data" "firewall_rules" {
       description = "Postgres from app tier"
     },
     {
+      name        = "allow-grpc"
+      action      = "allow"
+      protocol    = "tcp"
+      ports       = [50051]
+      description = "Internal service mesh"
+    },
+    {
       name        = "allow-http"
       action      = "allow"
       protocol    = "tcp"
-      ports       = [80, 443]
+      ports       = [80, 443, 8443]
       description = "Public web traffic"
     },
     {
@@ -56,24 +64,17 @@ resource "terraform_data" "firewall_rules" {
       ports       = [22]
       description = "Bastion access"
     },
-    {
-      name        = "deny-telnet"
-      action      = "deny"
-      protocol    = "tcp"
-      ports       = [23]
-      description = "Legacy protocol"
-    },
   ]
 }
 
 # CASE 3 (CLOUD-5277) — pure re-ordering, no value changes.
 resource "terraform_data" "tags" {
   input = [
-    "billing:platform",
-    "compliance:soc2",
-    "env:production",
-    "owner:core-infra",
     "tier:backend",
+    "owner:core-infra",
+    "env:production",
+    "compliance:soc2",
+    "billing:platform",
   ]
 }
 
@@ -81,7 +82,8 @@ resource "terraform_data" "tags" {
 resource "terraform_data" "large_address_pool" {
   input = flatten([
     for a in range(50) : [
-      for b in range(50) : format("10.%d.%d.0/24", a, b)
+      for b in range(50) :
+      a < 10 ? format("10.%d.%d.0/24", a, b) : format("172.%d.%d.0/24", 16 + a, b)
     ]
   ])
 }

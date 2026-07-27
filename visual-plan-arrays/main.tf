@@ -6,22 +6,24 @@ terraform {
   required_version = ">= 1.5"
 }
 
-# CASE 1 (CLOUD-4942) — set(string): re-sorted, one added, one removed, one changed in place.
-# v2: removed 10.0.3.0/24, added 10.0.7.0/24, 203.0.113.0/24 -> 203.0.113.128/25, order reversed.
+# CASE 1 (CLOUD-4942) — set(string): Terraform returns sets sorted, so a real change
+# is a sorted insert/remove, not a shuffle.
+# v3 vs applied state: removed 10.0.3.0/24, added 10.0.7.0/24,
+#                      203.0.113.0/24 -> 203.0.113.128/25. Everything else untouched.
 resource "terraform_data" "allowed_cidrs" {
   input = [
-    "203.0.113.128/25",
-    "198.51.100.0/24",
-    "192.168.11.0/24",
-    "192.168.10.0/24",
-    "172.17.0.0/16",
-    "172.16.0.0/16",
-    "10.0.7.0/24",
-    "10.0.6.0/24",
-    "10.0.5.0/24",
-    "10.0.4.0/24",
-    "10.0.2.0/24",
     "10.0.1.0/24",
+    "10.0.2.0/24",
+    "10.0.4.0/24",
+    "10.0.5.0/24",
+    "10.0.6.0/24",
+    "10.0.7.0/24",
+    "172.16.0.0/16",
+    "172.17.0.0/16",
+    "192.168.10.0/24",
+    "192.168.11.0/24",
+    "198.51.100.0/24",
+    "203.0.113.128/25",
   ]
 }
 

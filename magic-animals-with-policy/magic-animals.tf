@@ -138,3 +138,12 @@ output "list_example2" {
 output "list_example3" {
   value = var.magic_animals_list
 }
+
+# SCALRCORE-39501 demo: URLs in console output should render as clickable links
+output "base_url" {
+  value = "https://edgar.testenv.scalr.dev"
+}
+
+output "documentation" {
+  value = "See https://github.com/MaksymShvachkoScalr/hcl-kitchen for details."
+}
